@@ -65,3 +65,22 @@ def ui_list_books(db):
     print("\n--- All books ---")
     books = sorted(db["books"], key=lambda b: b["title"].lower())
     print_table(BOOK_HEADERS, book_rows(db, books))
+
+
+# =========================================================
+# US-04: Search books
+# =========================================================
+def search_books(db, query):
+    q = query.lower()
+    found = [b for b in db["books"]
+             if q in f'{b["title"]} {b["author"]} {b["isbn"]} {b["category"]}'.lower()]
+    return sorted(found, key=lambda b: b["title"].lower())
+
+
+def ui_search_books(db):
+    print("\n--- Search books ---")
+    results = search_books(db, ask("Title, author, ISBN or category"))
+    if not results:
+        print("No books found.")
+        return
+    print_table(BOOK_HEADERS, book_rows(db, results))
